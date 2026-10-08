@@ -2,8 +2,6 @@
 
 A scalable, multi-company, role-based HRMS for employee management, attendance and leave workflows — built for HR/Admins, Managers, and Employees with simplicity and extensibility in mind.
 
-**Live app:** https://desk-pal-hq.lovable.app
-
 ## Design system
 
 The mandatory interface source of truth is [`docs/brand-tokens.html`](docs/brand-tokens.html), with implementation rules summarized in [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md). All future interface work must use the shared semantic tokens and components described there; feature screens must not introduce direct palette colors, unrelated radii, or one-off button styles.
@@ -244,14 +242,14 @@ Key rules live in the database rather than the UI: `has_role` / `is_hr` / `is_ma
 ## Tech stack
 
 - **Frontend:** React 18, TypeScript 5, Vite 5, Tailwind CSS v3, shadcn/ui, Recharts, TanStack Query
-- **Backend:** Lovable Cloud (Supabase) — Postgres with row-level security scoped per company, Auth (email; roles in a separate `user_roles` table), Edge Functions, Storage (avatars, employee documents, payslip files)
+- **Backend:** Supabase — Postgres with row-level security scoped per company, Auth (email; roles in a separate `user_roles` table), Storage (avatars, employee documents, payslip files)
 - **Design system:** Inter typography, primary blue `#2563EB`, secondary violet `#7C3AED`, page background `#F0F4FF`, dark sidebar `#111827`, tokenized statuses (Active green, Pending amber, Terminated red, On Leave info blue)
 
 ## Getting started
 
 ### Prerequisites
 - Node.js 18+ (or Bun)
-- A Lovable Cloud backend is already provisioned for this project — no external services or API keys are needed.
+- A Supabase project. Copy its project URL and publishable (anon) key into a local `.env` file (see **Environment** below).
 
 ### Run locally
 
@@ -262,7 +260,7 @@ npm run build      # production build
 npm run test       # unit tests
 ```
 
-The frontend reads its backend URL and publishable key from `.env` (already committed per-project values — no secrets involved).
+The frontend reads its backend URL and publishable key from `.env` (git-ignored — create your own from the variables below).
 
 ### First-run checklist
 1. **Sign up** at `/signup` — choose "New company" to create a tenant, or "I have an invite code" to join one.
@@ -273,12 +271,21 @@ The frontend reads its backend URL and publishable key from `.env` (already comm
 6. **Run payroll** monthly from the Payroll page after attendance is settled, then mark the pay period paid to lock it.
 
 ### Environment
+Create a `.env` file in the project root:
+
+```bash
+VITE_SUPABASE_URL="https://<your-project-ref>.supabase.co"
+VITE_SUPABASE_PUBLISHABLE_KEY="<your-anon-key>"
+VITE_SUPABASE_PROJECT_ID="<your-project-ref>"
+```
+
 | Variable | Purpose |
 |---|---|
-| `VITE_SUPABASE_URL` | Backend URL (auto-configured) |
+| `VITE_SUPABASE_URL` | Supabase project URL |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | Publishable anon key (safe for the browser) |
+| `VITE_SUPABASE_PROJECT_ID` | Supabase project ref |
 
-The service-role key is **not available** on Lovable Cloud by design — all privileged operations run through security-definer database functions.
+The service-role key is never used in the frontend — all privileged operations run through security-definer database functions.
 
 ## Security model
 
